@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pydantic-settings
+pydantic
+sqlalchemy
+pymysql
+passlib
+passlib[argon2]
+python-jose
+python-multipart
