@@ -36,6 +36,8 @@ def get_posts(db: Session,
     if title:
         query = query.filter(Post.title == title)
     total = query.count()
+    if (page - 1) * page_size >= total and total != 0:
+        raise HTTPException(404, "Страница не найденна")
     posts = query.offset((page - 1) * page_size).limit(page_size).all()
     
     return {
@@ -98,6 +100,8 @@ def get_author_posts(db: Session,
     if title:
         query = query.filter(Post.title == title)
     total = query.count()
+    if (page - 1) * page_size >= total and total != 0:
+        raise HTTPException(404, "Страница не найденна")
     posts = query.offset((page - 1) * page_size).limit(page_size).all()
     if posts:
         return {

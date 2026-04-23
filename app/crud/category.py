@@ -18,6 +18,8 @@ def create_category(category:CategoryBase, db:Session) -> Category:
 def get_categories(page:int,page_size:int,db:Session) -> Optional[CategoryPaginatedResponse]:
     query = db.query(Category).order_by(desc(Category.created_at))
     total = query.count()
+    if (page - 1) * page_size >= total and total != 0:
+        raise HTTPException(404, "Страница не найденна")
     categories = query.offset((page - 1) * page_size).limit(page_size).all()
     if categories:
         return {

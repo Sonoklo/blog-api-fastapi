@@ -7,6 +7,7 @@ import datetime
 from jose import jwt
 from config import settings
 from sqlalchemy import  desc
+from fastapi import HTTPException
 
 def get_by_email(db: Session, email: str) -> Optional[Author]:
     return db.query(Author).filter(Author.email == email).first()
@@ -29,6 +30,8 @@ def get_author(db:Session, username:str, password:str) -> Optional[Author]:
 def get_all_authors(db:Session, page:int, page_size:int) -> Optional[PaginatedAuthorResponse]:
     query = db.query(Author).order_by(desc(Author.created_at))
     total = query.count()
+    if (page - 1) * page_size >= total and total != 0:
+        raise HTTPException(404, "Страница не найденна")
     author = query.offset((page - 1) * page_size).limit(page_size).all()
     if author:
         return {
